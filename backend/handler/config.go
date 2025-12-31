@@ -143,10 +143,10 @@ func NginxControlHandler(action, nginxBin string) echo.HandlerFunc {
 // NginxStatusHandler 返回 Nginx 进程状态
 func NginxStatusHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		// 使用 pgrep 或 ps 命令检查 nginx 进程
-		cmd := exec.Command("pgrep", "-x", "nginx")
+		// 使用 pgrep 检查 nginx 进程（不用 -x，因为进程名可能是 "nginx: master process"）
+		cmd := exec.Command("pgrep", "nginx")
 		output, err := cmd.CombinedOutput()
-		running := err == nil && len(output) > 0
+		running := err == nil && len(strings.TrimSpace(string(output))) > 0
 
 		return c.JSON(http.StatusOK, map[string]any{
 			"running": running,

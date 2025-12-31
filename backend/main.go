@@ -14,7 +14,7 @@ func main() {
 	configPath := "/opt/homebrew/etc/nginx/nginx.conf"
 	serversPath := "/opt/homebrew/etc/nginx/servers"
 	backupsPath := "./backups"
-	nginxBin := "/opt/homebrew/bin/nginx"
+	nginxBin := "nginx"
 
 	os.MkdirAll(backupsPath, 0755)
 
