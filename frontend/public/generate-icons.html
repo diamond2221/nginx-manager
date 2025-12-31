@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWA 图标生成器</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #1a1a2e;
+            color: #fff;
+            padding: 20px;
+        }
+        .container {
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 30px;
+        }
+        .icon-preview {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .icon-item img {
+            border: 2px solid #333;
+            border-radius: 20px;
+        }
+        .icon-item label {
+            font-size: 14px;
+            color: #888;
+        }
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background: #059669;
+        }
+        #status {
+            margin-top: 20px;
+            color: #fbbf24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ PWA 图标生成器</h1>
+        <p>点击下方按钮生成并下载 PNG 图标</p>
+
+        <div class="icon-preview" id="preview">
+            <!-- 预览将在这里显示 -->
+        </div>
+
+        <button onclick="generateAndDownload()">生成并下载所有图标</button>
+        <div id="status"></div>
+    </div>
+
+    <!-- 隐藏的 SVG 用于转换 -->
+    <svg id="source-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:none">
+      <defs>
+        <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#0f0f1a;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="boltGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+          <stop offset="30%" style="stop-color:#f59e0b;stop-opacity:1" />
+          <stop offset="70%" style="stop-color:#d97706;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#b45309;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="boltHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#fef3c7;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#fde68a;stop-opacity:1" />
+        </linearGradient>
+      </defs>
+      <rect width="512" height="512" rx="100" fill="url(#bgGrad)"/>
+      <path d="M 310 60 L 190 210 L 270 210 L 170 410 L 290 240 L 210 240 L 330 70 Z"
+            fill="url(#boltGrad)" stroke="#fcd34d" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M 290 90 L 200 200 L 260 200 L 190 340 L 270 220 L 220 220 L 300 100 Z"
+            fill="url(#boltHighlight)" opacity="0.7"/>
+      <path d="M 265 125 L 215 205 L 255 205 L 205 325 L 255 222 L 215 222 L 270 135 Z"
+            fill="#ffffff" opacity="0.9"/>
+    </svg>
+
+    <script>
+        const sizes = [192, 512]
+
+        // 显示预览
+        function showPreview() {
+            const preview = document.getElementById('preview')
+            const svgData = new XMLSerializer().serializeToString(document.getElementById('source-svg'))
+            const svgBlob = new Blob([svgData], {type: 'image/svg+xml'})
+            const svgUrl = URL.createObjectURL(svgBlob)
+
+            sizes.forEach(size => {
+                const div = document.createElement('div')
+                div.className = 'icon-item'
+                div.innerHTML = `
+                    <img src="${svgUrl}" width="${size/2}" height="${size/2}" alt="${size}x${size}">
+                    <label>${size}x${size}</label>
+                `
+                preview.appendChild(div)
+            })
+        }
+
+        // SVG 转 Canvas
+        async function svgToCanvas(svgElement, size) {
+            return new Promise((resolve) => {
+                const canvas = document.createElement('canvas')
+                canvas.width = size
+                canvas.height = size
+                const ctx = canvas.getContext('2d')
+
+                const svgData = new XMLSerializer().serializeToString(svgElement)
+                const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'})
+                const url = URL.createObjectURL(svgBlob)
+
+                const img = new Image()
+                img.onload = () => {
+                    ctx.drawImage(img, 0, 0, size, size)
+                    URL.revokeObjectURL(url)
+                    resolve(canvas)
+                }
+                img.src = url
+            })
+        }
+
+        // 生成并下载
+        async function generateAndDownload() {
+            const status = document.getElementById('status')
+            status.textContent = '正在生成...'
+
+            const svg = document.getElementById('source-svg')
+
+            for (const size of sizes) {
+                const canvas = await svgToCanvas(svg, size)
+                canvas.toBlob((blob) => {
+                    const url = URL.createObjectURL(blob)
+                    const a = document.createElement('a')
+                    a.href = url
+                    a.download = `icon-${size}x${size}.png`
+                    a.click()
+                    URL.revokeObjectURL(url)
+                    status.textContent = `✓ 已生成 ${size}x${size}.png`
+                }, 'image/png')
+            }
+
+            setTimeout(() => {
+                status.textContent = '✨ 所有图标已下载！请将文件放到 public/ 目录'
+            }, 1000)
+        }
+
+        // 页面加载时显示预览
+        showPreview()
+    </script>
+</body>
+</html>

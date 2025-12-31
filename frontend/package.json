@@ -1,0 +1,45 @@
+{
+  "name": "nginx-app-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@codemirror/commands": "^6.10.1",
+    "@codemirror/language": "^6.12.1",
+    "@codemirror/language-data": "^6.5.2",
+    "@codemirror/state": "^6.5.3",
+    "@codemirror/view": "^6.39.8",
+    "@lezer/highlight": "^1.2.3",
+    "@radix-ui/react-slot": "^1.0.2",
+    "@tailwindcss/vite": "^4.1.18",
+    "@uiw/codemirror-theme-github": "^4.25.4",
+    "@uiw/codemirror-themes": "^4.25.4",
+    "@uiw/react-codemirror": "^4.21.25",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "lucide-react": "^0.312.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^7.11.0",
+    "tailwind-merge": "^2.2.0",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.17",
+    "canvas": "^3.2.0",
+    "postcss": "^8.4.33",
+    "sharp": "^0.34.5",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8",
+    "vite-plugin-pwa": "^1.2.0"
+  }
+}
