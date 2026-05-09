@@ -67,11 +67,10 @@ if (!self.define) {
     });
   };
 }
-define(['./workbox-5fac4102'], (function (workbox) { 'use strict';
+define(['./workbox-f11c8a10'], (function (workbox) { 'use strict';
 
   self.skipWaiting();
   workbox.clientsClaim();
-
   /**
    * The precacheAndRoute() method efficiently caches and responds to
    * requests for URLs in the manifest.

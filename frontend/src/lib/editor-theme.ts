@@ -1,4 +1,4 @@
-import { keymap, highlightSpecialChars, drawSelection, lineNumbers, highlightActiveLineGutter, rectangularSelection, crosshairCursor } from "@codemirror/view"
+import { keymap, highlightSpecialChars, drawSelection, lineNumbers, highlightActiveLineGutter, rectangularSelection, crosshairCursor, KeyBinding } from "@codemirror/view"
 import { Compartment, Extension } from "@codemirror/state"
 import { defaultKeymap, history, historyKeymap, toggleLineComment } from "@codemirror/commands"
 import { indentOnInput, bracketMatching, foldGutter, foldKeymap } from "@codemirror/language"
@@ -76,6 +76,7 @@ export { themeCompartment, baseExtensionsCompartment }
 
 // Create base extensions (without theme)
 export function createBaseExtensions(): Extension[] {
+  const keymaps = [...defaultKeymap, ...historyKeymap, ...foldKeymap, ...completionKeymap]
   return [
     lineNumbers(),
     highlightActiveLineGutter(),
@@ -90,7 +91,7 @@ export function createBaseExtensions(): Extension[] {
     bracketMatching({ afterCursor: true }),
     closeBrackets(),
     autocompletion(),
-    keymap.of([...defaultKeymap, ...historyKeymap, ...foldKeymap, ...completionKeymap]),
+    keymap.of(keymaps as ReadonlyArray<KeyBinding>),
     keymap.of([{ key: "Mod-/", run: toggleLineComment }]),
     nginxSupport(),
   ]
