@@ -35,7 +35,7 @@ func SaveConfigHandler(path, backupsPath, nginxBin string) echo.HandlerFunc {
 		}
 
 		// 1. 创建备份
-		backupName := fmt.Sprintf("nginx.conf.%s.backup", time.Now().Format("20060102_150405"))
+		backupName := fmt.Sprintf("nginx.conf.%s.backup", time.Now().Format(time.DateTime))
 		backupPath := filepath.Join(backupsPath, backupName)
 		original, _ := os.ReadFile(path)
 		os.WriteFile(backupPath, original, 0644)
@@ -208,7 +208,7 @@ func SaveServerHandler(path, backupsPath, nginxBin string) echo.HandlerFunc {
 		filePath := filepath.Join(path, name)
 
 		// 备份
-		backupName := fmt.Sprintf("%s.%s.backup", name, time.Now().Format("20060102_150405"))
+		backupName := fmt.Sprintf("%s.%s.backup", name, time.Now().Format(time.DateTime))
 		backupPath := filepath.Join(backupsPath, backupName)
 		original, _ := os.ReadFile(filePath)
 		os.WriteFile(backupPath, original, 0644)
@@ -362,7 +362,7 @@ func DeleteServerHandler(path, backupsPath string) echo.HandlerFunc {
 		}
 
 		// 创建备份
-		backupName := fmt.Sprintf("%s.%s.backup", name, time.Now().Format("20060102_150405"))
+		backupName := fmt.Sprintf("%s.%s.backup", name, time.Now().Format(time.DateTime))
 		backupPath := filepath.Join(backupsPath, backupName)
 		content, _ := os.ReadFile(filePath)
 		os.WriteFile(backupPath, content, 0644)

@@ -40,7 +40,7 @@ func ListBackupsHandler(path string) echo.HandlerFunc {
 
 func CreateBackupHandler(configPath, backupsPath string) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		backupName := fmt.Sprintf("nginx.conf.%s.backup", time.Now().Format("20060102_150405"))
+		backupName := fmt.Sprintf("nginx.conf.%s.backup", time.Now().Format(time.DateTime))
 		backupPath := filepath.Join(backupsPath, backupName)
 
 		content, err := os.ReadFile(configPath)
